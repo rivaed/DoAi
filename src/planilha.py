@@ -1,25 +1,30 @@
 
-import os
 import gspread
-from dotenv import load_dotenv
+import streamlit as st
+import json
 from google.oauth2.service_account import Credentials
 
-load_dotenv()
+# Carrega os dados do segredo como dicionário
+service_account_info = json.loads(st.secrets["GOOGLE_CREDENTIALS_JSON"])
 
-# Caminho para as credenciais e ID da planilha
-GOOGLE_SHEET_ID = os.getenv("GOOGLE_SHEET_ID")
-CREDENTIALS_FILE = os.getenv("GOOGLE_CREDENTIALS_PATH")
+# Define os escopos necessários
+SCOPES = [
+    "https://www.googleapis.com/auth/spreadsheets",
+    "https://www.googleapis.com/auth/drive"
+]
 
-# Escopos necessários
-SCOPES = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
+# Constrói as credenciais
+creds = Credentials.from_service_account_info(service_account_info, scopes=SCOPES)
+
+# ID da planilha (vindo dos secrets)
+GOOGLE_SHEET_ID = st.secrets["GOOGLE_SHEET_ID"]
 
 def conectar_planilha():
-    creds = Credentials.from_service_account_file(CREDENTIALS_FILE, scopes=SCOPES)
     client = gspread.authorize(creds)
     sheet = client.open_by_key(GOOGLE_SHEET_ID)
     return sheet
 
-def registrar_entrada(alimento, quantidade, origem="Doação direta"):
+def registrar_entrada(alimento, quantidade, origem):
     sheet = conectar_planilha()
     aba = sheet.worksheet("Entradas")
     nova_linha = [alimento, quantidade, origem]
