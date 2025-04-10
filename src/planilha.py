@@ -1,22 +1,21 @@
 
 import gspread
 import streamlit as st
-import json
 from google.oauth2.service_account import Credentials
 
-# Carrega os dados do segredo como dicionário
-service_account_info = json.loads(st.secrets["GOOGLE_CREDENTIALS_JSON"])
+# Carrega os dados do segredo já como dicionário (formato TOML)
+service_account_info = dict(st.secrets["GOOGLE_CREDENTIALS_JSON"])
 
-# Define os escopos necessários
+# Escopos da API
 SCOPES = [
     "https://www.googleapis.com/auth/spreadsheets",
     "https://www.googleapis.com/auth/drive"
 ]
 
-# Constrói as credenciais
+# Cria as credenciais diretamente do dicionário
 creds = Credentials.from_service_account_info(service_account_info, scopes=SCOPES)
 
-# ID da planilha (vindo dos secrets)
+# ID da planilha vindo do secrets
 GOOGLE_SHEET_ID = st.secrets["GOOGLE_SHEET_ID"]
 
 def conectar_planilha():
