@@ -26,7 +26,6 @@ def exibir_login():
         if usuario in USUARIOS and USUARIOS[usuario] == senha:
             st.session_state.usuario_autenticado = True
             st.session_state.usuario = usuario
-            st.success("Login realizado com sucesso.")
             st.experimental_rerun()
         else:
             st.error("Usuário ou senha inválidos.")
@@ -74,7 +73,6 @@ def exibir_app():
                     registrar_saida(alimento, f"{quantidade}kg", grupo, observacoes)
                     st.success(f"{quantidade}kg de {alimento} registrado como saída.")
 
-    # Botão de logout
     if st.button("Sair"):
         st.session_state.usuario_autenticado = False
         st.session_state.usuario = ""
