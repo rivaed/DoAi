@@ -1,10 +1,9 @@
 import streamlit as st
 from src.planilha import registrar_entrada, registrar_saida
 
-# Configurações da página
 st.set_page_config(page_title="DoAí - Registro de Doações", layout="centered")
 
-# Usuários e senhas
+# Usuários e senhas (poderiam ser externalizados futuramente)
 USUARIOS = {
     "flor": "123",
     "edu": "123",
@@ -17,20 +16,20 @@ if "usuario_autenticado" not in st.session_state:
 if "usuario" not in st.session_state:
     st.session_state.usuario = ""
 
-# Tela de login
 def exibir_login():
     st.title("DoAí - Acesso Restrito")
+
     usuario = st.text_input("Usuário")
     senha = st.text_input("Senha", type="password")
+
     if st.button("Entrar"):
         if usuario in USUARIOS and USUARIOS[usuario] == senha:
             st.session_state.usuario_autenticado = True
             st.session_state.usuario = usuario
-            st.experimental_rerun()
+            st._rerun()  # evita erros no Streamlit Cloud
         else:
             st.error("Usuário ou senha inválidos.")
 
-# Tela principal após login
 def exibir_app():
     usuario = st.session_state.usuario
     st.title(f"DoAí - Registro de Doações ({usuario})")
@@ -62,23 +61,22 @@ def exibir_app():
         if enviado:
             if modo == "Entrada":
                 if not origem.strip():
-                    st.error("Informe a origem da doação.")
+                    st.warning("Informe a origem da doação.")
                 else:
                     registrar_entrada(alimento, f"{quantidade}kg", origem, observacoes)
                     st.success(f"{quantidade}kg de {alimento} registrado como entrada.")
             else:
                 if not grupo.strip():
-                    st.error("Informe o grupo destinatário.")
+                    st.warning("Informe o grupo destinatário.")
                 else:
                     registrar_saida(alimento, f"{quantidade}kg", grupo, observacoes)
                     st.success(f"{quantidade}kg de {alimento} registrado como saída.")
 
     if st.button("Sair"):
-        st.session_state.usuario_autenticado = False
-        st.session_state.usuario = ""
-        st.experimental_rerun()
+        st.session_state.clear()
+        st._rerun()
 
-# Fluxo principal
+# Execução principal
 if not st.session_state.usuario_autenticado:
     exibir_login()
 else:
