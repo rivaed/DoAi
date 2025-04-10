@@ -1,4 +1,3 @@
-
 import streamlit as st
 from src.planilha import registrar_entrada, registrar_saida
 
@@ -32,17 +31,11 @@ with st.form("registro_form"):
             if not origem.strip():
                 st.error("Informe a origem da doação.")
             else:
-                texto = f"{quantidade}kg de {alimento}"
-                if observacoes:
-                    texto += f" ({observacoes})"
-                registrar_entrada(alimento, f"{quantidade}kg", origem)
-                st.success(f"{texto} registrado como entrada.")
+                registrar_entrada(alimento, f"{quantidade}kg", origem, observacoes)
+                st.success(f"{quantidade}kg de {alimento} registrado como entrada.")
         else:
             if not grupo.strip():
                 st.error("Informe o grupo destinatário.")
             else:
-                texto = f"{quantidade}kg de {alimento} para {grupo}"
-                if observacoes:
-                    texto += f" ({observacoes})"
-                registrar_saida(alimento, f"{quantidade}kg", grupo)
-                st.success(f"{texto} registrado como saída.")
+                registrar_saida(alimento, f"{quantidade}kg", grupo, observacoes)
+                st.success(f"{quantidade}kg de {alimento} registrado como saída.")
