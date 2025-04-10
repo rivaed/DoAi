@@ -1,4 +1,3 @@
-
 import gspread
 import streamlit as st
 from google.oauth2.service_account import Credentials
@@ -23,16 +22,16 @@ def conectar_planilha():
     sheet = client.open_by_key(GOOGLE_SHEET_ID)
     return sheet
 
-def registrar_entrada(alimento, quantidade, origem):
+def registrar_entrada(alimento, quantidade, origem, observacao=""):
     sheet = conectar_planilha()
     aba = sheet.worksheet("Entradas")
-    nova_linha = [alimento, quantidade, origem]
+    nova_linha = [alimento, quantidade, origem, observacao]
     aba.append_row(nova_linha)
     print(f"Registrado: {quantidade} de {alimento}")
 
-def registrar_saida(alimento, quantidade, grupo):
+def registrar_saida(alimento, quantidade, grupo, observacao=""):
     sheet = conectar_planilha()
     aba = sheet.worksheet("Saídas")
-    nova_linha = [alimento, quantidade, grupo]
+    nova_linha = [alimento, quantidade, grupo, observacao]
     aba.append_row(nova_linha)
     print(f"Distribuído: {quantidade} de {alimento} para {grupo}")
